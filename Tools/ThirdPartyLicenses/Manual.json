@@ -1,0 +1,12 @@
+[
+    {
+        "PackageId": "Ignore",
+        "PackageVersion": "0.2.1",
+        "License": "MIT"
+    },
+     {
+        "PackageId": "UTF.Unknown",
+        "PackageVersion": "2.5.1",
+        "License": "MPL"
+    }
+]

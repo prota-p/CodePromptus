@@ -1,0 +1,13 @@
+﻿Project Hierarchy:
+{{ hierarchy }}
+
+{% if has_selected_files %}
+{% for file in selected_files %}
+File: {{ file.Path }}
+Code Content:
+{{ file.Content }}
+--------------------------------------------------
+{% endfor %}
+{% else %}
+No files selected. Select files from the tree view to include their content in the prompt.
+{% endif %}

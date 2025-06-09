@@ -1,0 +1,47 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CodePromptus.App.ViewModels"
+             xmlns:services="using:CodePromptus.App.Services"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="60"
+             x:Class="CodePromptus.App.Views.ToastItemView"
+             x:DataType="vm:ToastItemViewModel">
+	<Design.DataContext>
+		<vm:ToastItemViewModel/>
+	</Design.DataContext>
+
+	<Border CornerRadius="4" Padding="12,8" MinWidth="200" MaxWidth="400" Margin="0,0,0,8"
+            Classes.info="{Binding Level, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static services:ToastLevel.Info}}"
+            Classes.success="{Binding Level, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static services:ToastLevel.Success}}"
+            Classes.warning="{Binding Level, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static services:ToastLevel.Warning}}"
+            Classes.error="{Binding Level, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static services:ToastLevel.Error}}"
+            IsVisible="{Binding IsVisible}">
+		<Border.Styles>
+			<Style Selector="Border.info">
+				<Setter Property="Background" Value="#323232"/>
+			</Style>
+			<Style Selector="Border.success">
+				<Setter Property="Background" Value="#4CAF50"/>
+			</Style>
+			<Style Selector="Border.warning">
+				<Setter Property="Background" Value="#FF9800"/>
+			</Style>
+			<Style Selector="Border.error">
+				<Setter Property="Background" Value="#F44336"/>
+			</Style>
+		</Border.Styles>
+
+		<DockPanel LastChildFill="True">
+			<Button DockPanel.Dock="Right" Command="{Binding Close}"
+					VerticalAlignment="Top" HorizontalAlignment="Right"
+					Background="Transparent" Padding="6"
+					Margin="2,0,0,0">
+				<TextBlock Text="×" FontSize="16" Foreground="White"/>
+			</Button>
+			<TextBlock Text="{Binding Message}" TextWrapping="Wrap"
+					   VerticalAlignment="Center" Foreground="White"
+					   DockPanel.Dock="Left"/>
+		</DockPanel>
+	</Border>
+</UserControl>

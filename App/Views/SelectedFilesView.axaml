@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CodePromptus.App.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="CodePromptus.App.Views.SelectedFilesView"
+             x:DataType="vm:SelectedFilesViewModel">
+
+	<Design.DataContext>
+		<vm:SelectedFilesViewModel/>
+	</Design.DataContext>
+
+	<DockPanel>
+		<TextBlock DockPanel.Dock="Top"
+                   Text="Selected Files View"
+                   FontWeight="Bold"
+                   Margin="0,0,0,10"/>
+		<TextBlock DockPanel.Dock="Top"
+                   Text="No file selected."
+                   Margin="0,0,0,10"
+                   IsVisible="{Binding !HasSelectedItems}"/>
+		<ListBox ItemsSource="{Binding SelectedItems}">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<StackPanel Orientation="Horizontal" Spacing="5">
+						<CheckBox IsChecked="{Binding IsSelected}" VerticalAlignment="Center"/>
+						<TextBlock Text="{Binding Icon}" Width="20"/>
+						<TextBlock Text="{Binding Name}"/>
+					</StackPanel>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</DockPanel>
+</UserControl>
