@@ -1,7 +1,9 @@
-﻿using CodePromptus.App.Configuration;
+﻿using Avalonia.Controls.Mixins;
+using CodePromptus.App.Configuration;
 using CodePromptus.App.Infrastructure;
 using CodePromptus.App.Models;
 using System;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -17,7 +19,14 @@ public class FolderHistoryRepositoryService(IFileSystemService fileSystemService
         {
             string file = await fileSystemService.ReadFileContentAsync(Constants.FolderHistoryPath);
             var folderHistory = JsonSerializer.Deserialize<FolderHistory>(file, CachedJsonSerializerOptions);
-            return folderHistory ?? throw new InvalidOperationException("Failed to deserialize FolderHistory from file.");
+            if (folderHistory == null)
+            {
+                throw new InvalidOperationException("Deserialization of FolderHistory returned null.");
+            }
+            else
+            {
+                return CreateValidatedHistory(folderHistory);
+            }
         }
         else
         {
@@ -26,6 +35,15 @@ public class FolderHistoryRepositoryService(IFileSystemService fileSystemService
                 Entries = []
             };
         }
+    }
+
+    private FolderHistory CreateValidatedHistory(FolderHistory folderHistory)
+    {
+        return new()
+        {
+            Entries = [.. folderHistory.Entries.Where(
+                entry => fileSystemService.DirectoryExists(entry.FolderPath) && fileSystemService.FileExists(entry.GitignorePath))]
+        };
     }
 
     public async Task SaveFolderHistoryAsync(FolderHistory folderHistory)
