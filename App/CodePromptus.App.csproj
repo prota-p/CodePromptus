@@ -6,7 +6,7 @@
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-	<Version>0.1.0</Version>
+	<Version>0.2.0</Version>
 	<ApplicationIcon>Assets\codepromptus-logo.ico</ApplicationIcon>
   </PropertyGroup>
 
@@ -38,7 +38,7 @@
       <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.9" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.8" />
     <PackageReference Include="Fluid.Core" Version="2.41.2" />
     <PackageReference Include="Ignore" Version="0.2.1" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.15" />
