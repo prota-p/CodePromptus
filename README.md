@@ -24,8 +24,8 @@ Developed to automate the manual copy-and-paste work when asking AI coding quest
 ## System Requirements
 - Windows 11 (tested and confirmed)
 - MacOS and Linux binaries are also available, but not tested.
-- .NET 9.0
-  - No separate installation of .NET 9.0 is required as the app binary is self-contained.
+- .NET 10.0
+  - No separate installation of .NET 10.0 is required as the app binary is self-contained.
 
 ## Usage
 1. Select a project folder with **"Open Folder"**
