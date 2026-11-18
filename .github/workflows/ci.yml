@@ -29,7 +29,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.x'
+        dotnet-version: '10.0.x'
         
     - name: Display .NET information
       run: dotnet --info
@@ -73,7 +73,7 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: |
-            9.0.x
+            10.0.x
 
     - name: Install requirements for Avalonia
       run: bash .github/scripts/install-avalonia-deps.sh
