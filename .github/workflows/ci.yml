@@ -123,7 +123,7 @@ jobs:
         set -e
         for RID in win-x64 osx-x64 linux-x64; do
           echo "Publishing for $RID"
-          dotnet publish App/CodePromptus.App.csproj -c Release -r $RID --self-contained true -o publish-$RID
+          dotnet publish App/CodePromptus.App.csproj -c Release -r $RID --self-contained true -p:PublishSingleFile=true -o publish-$RID
           echo "Building third-party notices for $RID"
           dotnet noticeforge notices App/obj/Release/net10.0/$RID/CodePromptus.App.deps.json -c ThirdPartyLicenses/noticeforge.json -o publish-$RID/THIRD-PARTY-NOTICES.txt
           echo "Zipping build for $RID"

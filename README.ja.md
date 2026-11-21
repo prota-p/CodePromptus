@@ -62,7 +62,7 @@ dotnet test
 ### バイナリ作成
 
 ```bash
-dotnet publish App/CodePromptus.App.csproj -c Release -r [RID] --self-contained true -o publish-[RID]
+dotnet publish App/CodePromptus.App.csproj -c Release -r [RID] --self-contained true -p:PublishSingleFile=true -o publish-[RID]
 ```
 [RID] は win-x64、osx-x64、linux-x64 のいずれかに置き換えてください（App プロジェクトの `RuntimeIdentifiers` に書いてあるもの）。
 

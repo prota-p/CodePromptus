@@ -55,7 +55,7 @@ dotnet test
 
 ### Binary Creation
 ```bash
-dotnet publish App/CodePromptus.App.csproj -c Release -r [RID] --self-contained true -o publish-[RID]
+dotnet publish App/CodePromptus.App.csproj -c Release -r [RID] --self-contained true -p:PublishSingleFile=true -o publish-[RID]
 ```
 Replace [RID] with win-x64, osx-x64 or linux-x64 (the ones listed in `RuntimeIdentifiers` in the App project).
 
