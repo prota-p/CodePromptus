@@ -1,0 +1,65 @@
+{
+  // Settings for NoticeForge (https://github.com/prota-p/NoticeForge), which checks the licenses of our
+  // dependencies and builds THIRD-PARTY-NOTICES.txt for the release.
+  //
+  // "license" and "file" under "packages" are used only when the tool could not find them by itself
+  // ("check" tells us when one is no longer needed). "origin" is where the text came from, "reason" is why
+  // it had to be supplied by hand. "reviewed" is the conclusion of a human review where a machine can't decide.
+  // A trailing * is a pattern ("SkiaSharp*" matches every package starting with SkiaSharp).
+  //
+  // both = may be shipped (check and notices), repository = may only be used (check only)
+  "allow": {
+    "MIT": "both",
+    "Apache-2.0": "both",
+    "BSD-2-Clause": "both",
+    "BSD-3-Clause": "both",
+    // UTF.Unknown (shipped). File-level weak copyleft: as long as we use the unmodified dll, it does not
+    // extend to CodePromptus (MIT) itself. When shipping, we include the original text and say where the
+    // source is (shown as "Source:" in the notices).
+    "MPL-1.1": "both"
+  },
+  "packages": {
+    // ---- Shipped (App) ----
+    "Avalonia.Angle.Windows.Natives": {
+      "license": "BSD-3-Clause",
+      "reason": "The nuspec uses <license type=\"file\"> (no declared type). The LICENSE in the nupkg is ANGLE's BSD-3-Clause text"
+    },
+    "Ignore": {
+      "license": "MIT",
+      "reason": "The nuspec declares no license type. The LICENSE at the recorded commit of the repository is the MIT text"
+    },
+    "MicroCom.Runtime": {
+      "file": "licenses/MicroCom.Runtime.txt",
+      "origin": "https://github.com/kekekeks/MicroCom/blob/cd2fa3c89525fbe7b46bd13f9ec8c77bd829e815/LICENSE",
+      "reason": "The nuspec records no commit and the repository has no tags, so this is the text on master when it was fetched (2026-11-19)"
+    },
+    "UTF.Unknown": {
+      "file": "licenses/UTF.Unknown.txt",
+      "origin": "https://github.com/CharsetDetector/UTF-unknown/blob/4654fbf0cdb47705e74a2c74bae20d486eb23fa8/license/MPL-1.1.txt",
+      "reason": "The texts are under license/ instead of the repository root (MPL-1.1, GPL-2.0 and LGPL-2.1; the README offers MPL-1.1, or GPL-2.0-or-later, or LGPL-2.1-or-later). We take MPL-1.1, as the nuspec declares"
+    },
+
+    // The native notices of SkiaSharp and HarfBuzzSharp (the same file in all of them) name GPL and LGPL.
+    // HarfBuzzSharp itself has no notice.
+    "SkiaSharp*": {
+      "reviewed": "None of the GPL/LGPL options in the notice need to be chosen (gif and zlib are MPL, FreeType is FTL). libmicrohttpd is used only by a test tool and is not shipped"
+    },
+    "HarfBuzzSharp.NativeAssets.*": {
+      "reviewed": "Same notice as SkiaSharp; same conclusion"
+    },
+
+    // ---- Build tools (App; not shipped) ----
+    "Fody": {
+      "license": "MIT",
+      "reason": "The nuspec uses <license type=\"file\"> (no declared type). The License.txt in the nupkg is the MIT text"
+    },
+
+    // ---- Tests ----
+    "xunit.abstractions": {
+      "license": "Apache-2.0",
+      "file": "licenses/xunit.abstractions.txt",
+      "origin": "https://github.com/xunit/abstractions.xunit/blob/f62f6907f7a209865fe9cbbd99612c0a28fe4bf5/license.txt",
+      "reason": "The nuspec has only a licenseUrl (the license.txt of xunit/xunit) and no repository. Tag 2.0.3 has no LICENSE; this is the Apache-2.0 text added by the 2018 commit \"Add missing license\""
+    }
+  }
+}

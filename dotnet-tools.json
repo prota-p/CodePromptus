@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "noticeforge": {
+      "version": "0.1.0-alpha.1",
+      "commands": [
+        "noticeforge"
+      ],
+      "rollForward": false
+    }
+  }
+}

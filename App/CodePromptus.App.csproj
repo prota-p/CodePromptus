@@ -6,7 +6,12 @@
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-	<Version>0.2.0</Version>
+	<Version>0.2.1</Version>
+	<!-- Every RID the release CI publishes for, so packages.lock.json is the same whichever one is restored -->
+	<RuntimeIdentifiers>win-x64;osx-x64;linux-x64</RuntimeIdentifiers>
+	<!-- Releases are single-file. Set here rather than on the publish command line, because it adds a
+	     package reference (Microsoft.NET.ILLink.Tasks) that has to be in packages.lock.json -->
+	<PublishSingleFile>true</PublishSingleFile>
 	<ApplicationIcon>Assets\codepromptus-logo.ico</ApplicationIcon>
   </PropertyGroup>
 

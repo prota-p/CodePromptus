@@ -53,19 +53,29 @@ To run the tests:
 dotnet test
 ```
 
-### Generate Third-Party License Files
-```bash
-dotnet tool install --global nuget-license
-nuget-license --input App/CodePromptus.App.csproj --output JsonPretty --file-output Tools/ThirdPartyLicenses/Auto.json
-nuget-license --input App/CodePromptus.App.csproj --license-information-download-location Tools/ThirdPartyLicenses/Auto
-dotnet run --project Tools/ThirdPartyLicenseGenerator .\Tools\ThirdPartyLicenses
-```
-
 ### Binary Creation
 ```bash
-dotnet publish App/CodePromptus.App.csproj -c Release -r [RID] --self-contained=true -p:PublishSingleFile=true -o publish-[RID]
+dotnet publish App/CodePromptus.App.csproj -c Release -r [RID] --self-contained true -o publish-[RID]
 ```
-Replace [RID] with the target OS such as win-x64, osx-x64, linux-x64, etc.
+Replace [RID] with win-x64, osx-x64 or linux-x64 (the ones listed in `RuntimeIdentifiers` in the App project).
+
+### Third-Party Licenses
+License checks and the notices file shipped with the binaries are handled by [NoticeForge](https://github.com/prota-p/NoticeForge). The settings are in `ThirdPartyLicenses/noticeforge.json`.
+```bash
+dotnet tool restore
+
+# May we use every dependency? (reads packages.lock.json)
+dotnet noticeforge check -c ThirdPartyLicenses/noticeforge.json
+
+# Build the notices for what was published (run after dotnet publish, once per RID)
+dotnet noticeforge notices App/obj/Release/net10.0/[RID]/CodePromptus.App.deps.json -c ThirdPartyLicenses/noticeforge.json -o publish-[RID]/THIRD-PARTY-NOTICES.txt
+```
+
+### Adding or Updating Dependencies
+Dependency versions are pinned in `packages.lock.json`, and restore fails when it does not match. After changing a package reference, update the lock files and review the diff:
+```bash
+dotnet restore -p:RestoreLockedMode=false
+```
 
 ## Tech Stack
 - Avalonia UI (.NET cross-platform UI)

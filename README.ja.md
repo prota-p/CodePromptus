@@ -59,20 +59,30 @@ dotnet run --project App/CodePromptus.App.csproj
 dotnet test
 ```
 
-### サードパーティライセンスファイルの生成
-```bash
-dotnet tool install --global nuget-license
-nuget-license --input App/CodePromptus.App.csproj --output JsonPretty --file-output Tools/ThirdPartyLicenses/Auto.json
-nuget-license --input App/CodePromptus.App.csproj --license-information-download-location Tools/ThirdPartyLicenses/Auto
-dotnet run --project Tools/ThirdPartyLicenseGenerator .\Tools\ThirdPartyLicenses
-```
-
 ### バイナリ作成
 
 ```bash
-dotnet publish App/CodePromptus.App.csproj -c Release -r [RID] --self-contained=true -p:PublishSingleFile=true -o publish-[RID]
+dotnet publish App/CodePromptus.App.csproj -c Release -r [RID] --self-contained true -o publish-[RID]
 ```
-[RID] はターゲットOSにあわせて win-x64、osx-x64、linux-x64 などに置き換えてください。
+[RID] は win-x64、osx-x64、linux-x64 のいずれかに置き換えてください（App プロジェクトの `RuntimeIdentifiers` に書いてあるもの）。
+
+### サードパーティライセンス
+依存ライブラリのライセンスの検査と、バイナリに同梱する告知ファイルの生成には [NoticeForge](https://github.com/prota-p/NoticeForge) を使っています。設定は `ThirdPartyLicenses/noticeforge.json` にあります。
+```bash
+dotnet tool restore
+
+# 依存ライブラリをすべて使ってよいか（packages.lock.json を読む）
+dotnet noticeforge check -c ThirdPartyLicenses/noticeforge.json
+
+# publish したものの告知ファイルを作る（dotnet publish のあと、RID ごとに実行）
+dotnet noticeforge notices App/obj/Release/net10.0/[RID]/CodePromptus.App.deps.json -c ThirdPartyLicenses/noticeforge.json -o publish-[RID]/THIRD-PARTY-NOTICES.txt
+```
+
+### 依存ライブラリの追加・更新
+依存ライブラリのバージョンは `packages.lock.json` で固定していて、一致しないと restore が失敗します。パッケージ参照を変えたあとは、lock ファイルを更新して差分を確認してください。
+```bash
+dotnet restore -p:RestoreLockedMode=false
+```
 
 ## 技術スタック
 

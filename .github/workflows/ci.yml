@@ -47,7 +47,25 @@ jobs:
       
     - name: Test
       run: dotnet test CodePromptus.sln --configuration Release --no-build --verbosity normal
-            
+
+    # License texts fetched from GitHub are pinned to a commit, so the cache never goes stale
+    - name: Cache license texts
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/cache@v4
+      with:
+        path: ~/.local/share/NoticeForge/cache
+        key: noticeforge-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: noticeforge-
+
+    # May we use every dependency? The lock files are the same on every OS, so one OS is enough
+    - name: Check licenses of dependencies
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        dotnet tool restore
+        dotnet noticeforge check -c ThirdPartyLicenses/noticeforge.json
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+
     - name: Upload test screenshots and logs
       uses: actions/upload-artifact@v4
       if: always()
@@ -59,10 +77,11 @@ jobs:
         if-no-files-found: warn
 
   publish:
+    # Runs on pull requests too, so a broken publish or notices step is found before merging.
+    # Only the release step at the end is limited to pushes to main.
     name: Publish and Package Artifacts
     needs: test
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
     - uses: actions/checkout@v4
@@ -85,33 +104,38 @@ jobs:
         echo "version=$VERSION" >> $GITHUB_OUTPUT
         echo "Found version: $VERSION"
 
-    - name: Restore and build solution for license generation
-      run: |
-        dotnet restore CodePromptus.sln
-        dotnet build CodePromptus.sln --configuration Release
+    - name: Restore tools
+      run: dotnet tool restore
 
-    - name: Generate third-party license files
-      run: |
-        dotnet tool install --global nuget-license
-        # Ignore non-zero exit codes from nuget-license, as these typically indicate warnings rather than critical errors.
-        nuget-license --input App/CodePromptus.App.csproj --output JsonPretty --file-output Tools/ThirdPartyLicenses/Auto.json || true
-        nuget-license --input App/CodePromptus.App.csproj --license-information-download-location Tools/ThirdPartyLicenses/Auto || true
-        dotnet build Tools/ThirdPartyLicenseGenerator/ThirdPartyLicenseGenerator.csproj --configuration Release
-        dotnet run --project Tools/ThirdPartyLicenseGenerator --configuration Release -- Tools/ThirdPartyLicenses .
+    # License texts fetched from GitHub are pinned to a commit, so the cache never goes stale
+    - name: Cache license texts
+      uses: actions/cache@v4
+      with:
+        path: ~/.local/share/NoticeForge/cache
+        key: noticeforge-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: noticeforge-
 
-    - name: Publish and Zip All Platforms
+    # The notices are built per RID, because the native components differ by OS.
+    # A single-file publish embeds deps.json in the executable, so the one left in obj is used.
+    # set -e stops the job when a publish fails or NoticeForge reports a problem.
+    - name: Publish, Build Notices and Zip All Platforms
       run: |
+        set -e
         for RID in win-x64 osx-x64 linux-x64; do
           echo "Publishing for $RID"
-          dotnet publish App/CodePromptus.App.csproj -c Release -r $RID --self-contained true -p:PublishSingleFile=true -o publish-$RID
-          cp ThirdPartyLicenses.txt publish-$RID/
+          dotnet publish App/CodePromptus.App.csproj -c Release -r $RID --self-contained true -o publish-$RID
+          echo "Building third-party notices for $RID"
+          dotnet noticeforge notices App/obj/Release/net10.0/$RID/CodePromptus.App.deps.json -c ThirdPartyLicenses/noticeforge.json -o publish-$RID/THIRD-PARTY-NOTICES.txt
           echo "Zipping build for $RID"
           cd publish-$RID
           zip -r ../CodePromptus-v${{ steps.version.outputs.version }}-$RID.zip .
           cd ..
         done
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
 
     - name: Create Release and Upload Artifacts
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: softprops/action-gh-release@v1
       with:
         tag_name: v${{ steps.version.outputs.version }}
