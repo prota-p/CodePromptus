@@ -6,7 +6,14 @@
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-	<Version>0.2.0</Version>
+	<Version>0.2.1</Version>
+	<!-- Every RID the release CI publishes for, so packages.lock.json is the same whichever one is restored -->
+	<RuntimeIdentifiers>win-x64;osx-x64;linux-x64</RuntimeIdentifiers>
+	<!-- Releases are published with -p:PublishSingleFile=true, which adds a package reference
+	     (Microsoft.NET.ILLink.Tasks). Enabling the analyzer here adds the same reference to every restore,
+	     so packages.lock.json matches both a plain build and a publish. PublishSingleFile itself is not set
+	     here, because it would make the SDK add the build machine's own RID to the project -->
+	<EnableSingleFileAnalyzer>true</EnableSingleFileAnalyzer>
 	<ApplicationIcon>Assets\codepromptus-logo.ico</ApplicationIcon>
   </PropertyGroup>
 

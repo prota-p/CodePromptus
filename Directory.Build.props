@@ -1,0 +1,21 @@
+<Project>
+
+  <!-- How dependencies are taken in -->
+  <PropertyGroup>
+    <!-- Pin dependency versions in packages.lock.json (the lock files are committed) -->
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <!-- Fail restore when it doesn't match the lock files (never rewrite them silently).
+         Only when adding or updating a dependency, restore with -p:RestoreLockedMode=false and review the lock diff -->
+    <RestoreLockedMode>true</RestoreLockedMode>
+    <!-- Fail the build on any published vulnerability, including transitive dependencies -->
+    <NuGetAudit>true</NuGetAudit>
+    <NuGetAuditMode>all</NuGetAuditMode>
+    <WarningsAsErrors>$(WarningsAsErrors);NU1901;NU1902;NU1903;NU1904</WarningsAsErrors>
+  </PropertyGroup>
+
+  <!-- In CI, builds are deterministic -->
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+</Project>

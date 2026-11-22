@@ -483,11 +483,6 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 
-# ThirdPartyLicenses - Exclude auto-generated files
-Tools/ThirdPartyLicenses/Auto/
-Tools/ThirdPartyLicenses/Auto.json
-Tools/ThirdPartyLicenses/ThirdPartyLicenses.txt
-
 # TestData - Include bin/obj folders for testing
 !Tests/TestData/**/bin/
 !Tests/TestData/**/obj/
